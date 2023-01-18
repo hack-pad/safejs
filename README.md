@@ -19,11 +19,15 @@ In an effort to align with the Go standard library API, some breaking changes ma
 
 ## Quick start
 
-1. Import `safejs`:
+1. Get `safejs`:
+```
+go get github.com/hack-pad/safejs
+```
+2. Import `safejs`:
 ```go
 import "github.com/hack-pad/safejs"
 ```
-2. Replace uses of `syscall/js` with the `safejs` alternative. 
+3. Replace uses of `syscall/js` with the `safejs` alternative. 
 
 Before:
 ```go
