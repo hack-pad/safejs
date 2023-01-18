@@ -35,6 +35,8 @@ jobs:
     - uses: actions/setup-go@v3
       with:
         go-version: ${{ matrix.go }}
+    - name: Install Chrome
+      uses: browser-actions/setup-chrome@latest
     - name: Test
       run: make test
     - name: Publish test coverage
