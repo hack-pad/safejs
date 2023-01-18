@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-go@v3
+      with:
+        go-version: 1.19.x
+    - name: Lint
+      run: make lint
+
+  test:
+    strategy:
+      matrix:
+        platform: 
+        - ubuntu-latest
+        go:
+        - 1.18.x
+        - 1.19.x
+        include:
+        - platform: macos-latest
+          go: 1.19.x
+        - platform: windows-latest
+          go: 1.19.x
+    runs-on: ${{ matrix.platform }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-go@v3
+      with:
+        go-version: ${{ matrix.go }}
+    - name: Install Chrome
+      uses: browser-actions/setup-chrome@latest
+    - name: Test
+      run: make test
+    - name: Publish test coverage
+      if: "matrix.platform == 'ubuntu-latest' && matrix.go == '1.19.x'"
+      run: make test-publish-coverage
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
