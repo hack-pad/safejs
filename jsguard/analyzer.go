@@ -3,8 +3,11 @@
 package jsguard
 
 import (
+	"bytes"
 	"fmt"
 	"go/ast"
+	"go/printer"
+	"go/token"
 	"log"
 	"os"
 	"strings"
@@ -77,6 +80,15 @@ func inspectNode(pass *analysis.Pass, node ast.Node, syscallJSImportName string)
 	recurse = inspectMethodCall(pass, node) || recurse
 	recurse = inspectPackageCall(pass, node, syscallJSImportName) || recurse
 	return recurse
+}
+
+func formatNode(fset *token.FileSet, x interface{}) string {
+	var buf bytes.Buffer
+	err := printer.Fprint(&buf, fset, x)
+	if err != nil {
+		panic(err)
+	}
+	return buf.String()
 }
 
 func inspectMethodCall(pass *analysis.Pass, node ast.Node) bool {
