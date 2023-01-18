@@ -8,10 +8,12 @@ import (
 	"github.com/hack-pad/safejs/internal/catch"
 )
 
+// Func is a wrapped Go function to be called by JavaScript.
 type Func struct {
 	fn js.Func
 }
 
+// FuncOf returns a function to be used by JavaScript. See [js.FuncOf] for details.
 func FuncOf(fn func(this Value, args []Value) any) (Func, error) {
 	jsFunc, err := toJSFunc(fn)
 	return Func{
@@ -29,10 +31,15 @@ func toJSFunc(fn func(this Value, args []Value) any) (js.Func, error) {
 	})
 }
 
+// Release frees up resources allocated for the function. The function must not be invoked after calling Release.
+// It is allowed to call Release while the function is still running.
 func (f Func) Release() {
 	f.fn.Release()
 }
 
+// Value returns this Func's inner Value. For example, using value.Invoke() calls the function.
+//
+// Equivalent to accessing [js.Func]'s embedded [js.Value] field, only as a safejs type.
 func (f Func) Value() Value {
 	return Safe(f.fn.Value)
 }

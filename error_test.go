@@ -10,7 +10,9 @@ import (
 )
 
 func TestError(t *testing.T) {
+	t.Parallel()
 	t.Run("valid error", func(t *testing.T) {
+		t.Parallel()
 		jsErr := js.Error{
 			Value: js.ValueOf(map[string]any{
 				"message": "foo",
@@ -28,6 +30,7 @@ func TestError(t *testing.T) {
 	})
 
 	t.Run("invalid error", func(t *testing.T) {
+		t.Parallel()
 		jsErr := js.Error{Value: js.Undefined()}
 		err := Error{err: jsErr}
 		assert.EqualError(t, err, "failed generating error message: syscall/js: call of Value.Get on undefined")

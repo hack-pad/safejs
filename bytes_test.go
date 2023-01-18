@@ -9,6 +9,7 @@ import (
 )
 
 func TestCopyBytesError(t *testing.T) {
+	t.Parallel()
 	_, err := CopyBytesToGo(nil, Undefined())
 	assert.EqualError(t, err, "syscall/js: CopyBytesToGo: expected src to be an Uint8Array or Uint8ClampedArray")
 

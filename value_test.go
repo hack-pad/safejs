@@ -10,6 +10,7 @@ import (
 )
 
 func TestSafeUnsafe(t *testing.T) {
+	t.Parallel()
 	jsValue := js.ValueOf("foo")
 	assert.Equal(t, jsValue, Unsafe(Safe(jsValue)))
 	assert.Equal(t, Value{
@@ -18,6 +19,7 @@ func TestSafeUnsafe(t *testing.T) {
 }
 
 func TestValueBool(t *testing.T) {
+	t.Parallel()
 	const someBool = true
 	foo, err := ValueOf(someBool)
 	assert.NoError(t, err)
@@ -28,6 +30,7 @@ func TestValueBool(t *testing.T) {
 }
 
 func TestValueFloat(t *testing.T) {
+	t.Parallel()
 	const someFloat = 42.42
 	foo, err := ValueOf(someFloat)
 	assert.NoError(t, err)
@@ -38,6 +41,7 @@ func TestValueFloat(t *testing.T) {
 }
 
 func TestValueInt(t *testing.T) {
+	t.Parallel()
 	const someInt = 42
 	foo, err := ValueOf(someInt)
 	assert.NoError(t, err)
@@ -48,6 +52,7 @@ func TestValueInt(t *testing.T) {
 }
 
 func TestValueString(t *testing.T) {
+	t.Parallel()
 	const someString = "foo"
 	foo, err := ValueOf(someString)
 	assert.NoError(t, err)
@@ -58,18 +63,21 @@ func TestValueString(t *testing.T) {
 }
 
 func TestNull(t *testing.T) {
+	t.Parallel()
 	result, err := ValueOf(nil)
 	assert.NoError(t, err)
 	assert.Equal(t, result, Null())
 }
 
 func TestUndefined(t *testing.T) {
+	t.Parallel()
 	result, err := ValueOf(js.Undefined())
 	assert.NoError(t, err)
 	assert.Equal(t, result, Undefined())
 }
 
 func TestValueCall(t *testing.T) {
+	t.Parallel()
 	obj, err := ValueOf(map[string]any{
 		"foo": js.FuncOf(func(this js.Value, args []js.Value) any {
 			return "bar"
@@ -84,6 +92,7 @@ func TestValueCall(t *testing.T) {
 }
 
 func TestValueDelete(t *testing.T) {
+	t.Parallel()
 	obj, err := ValueOf(map[string]any{
 		"foo": 1,
 		"bar": 2,
@@ -112,19 +121,24 @@ func NaN(t *testing.T) Value {
 }
 
 func TestValueEqual(t *testing.T) {
+	t.Parallel()
 	value1, err := ValueOf(1)
 	assert.NoError(t, err)
+	value1Copy := value1
+
 	value2, err := ValueOf(2)
 	assert.NoError(t, err)
 
-	assert.Equal(t, true, value1.Equal(value1))
+	assert.Equal(t, true, value1.Equal(value1Copy))
 	assert.Equal(t, false, value1.Equal(value2))
 
 	valueNaN := NaN(t)
-	assert.Equal(t, false, valueNaN.Equal(valueNaN))
+	valueNaN2 := NaN(t)
+	assert.Equal(t, false, valueNaN.Equal(valueNaN2))
 }
 
 func TestValueIndex(t *testing.T) {
+	t.Parallel()
 	arr, err := ValueOf([]any{1, 2, 3})
 	assert.NoError(t, err)
 
@@ -136,7 +150,9 @@ func TestValueIndex(t *testing.T) {
 }
 
 func TestValueInstanceOf(t *testing.T) {
+	t.Parallel()
 	t.Run("wrong type", func(t *testing.T) {
+		t.Parallel()
 		value, err := ValueOf("foo")
 		assert.NoError(t, err)
 
@@ -145,6 +161,7 @@ func TestValueInstanceOf(t *testing.T) {
 	})
 
 	t.Run("wrong constructor prototype type", func(t *testing.T) {
+		t.Parallel()
 		fakeClass, err := FuncOf(func(this Value, args []Value) any {
 			return nil
 		})
@@ -159,6 +176,7 @@ func TestValueInstanceOf(t *testing.T) {
 	})
 
 	t.Run("non-matching type", func(t *testing.T) {
+		t.Parallel()
 		numberType, err := Global().Get("Number")
 		assert.NoError(t, err)
 		stringType, err := Global().Get("String")
@@ -172,6 +190,7 @@ func TestValueInstanceOf(t *testing.T) {
 	})
 
 	t.Run("matching type", func(t *testing.T) {
+		t.Parallel()
 		stringType, err := Global().Get("String")
 		assert.NoError(t, err)
 		value, err := stringType.New("foo")
@@ -186,35 +205,8 @@ func TestValueInstanceOf(t *testing.T) {
 	})
 }
 
-/*
-// TODO
-func TestValueInvoke(t *testing.T) {
-	var fnThis Value
-	var fnArgs []Value
-	returnValue, err := ValueOf("foo")
-	assert.NoError(t, err)
-	argValue, err := ValueOf("bar")
-	assert.NoError(t, err)
-
-	fn, err := FuncOf(func(this Value, args []Value) any {
-		fnThis = this
-		fnArgs = args
-		return returnValue
-	})
-	assert.NoError(t, err)
-	returned, err := fn.Value().Invoke("bar")
-	if !assert.NoError(t, err) {
-		return
-	}
-	assert.Equal(t, true, returnValue.Equal(returned))
-	assert.Equal(t, true, fnThis.Equal(fn.Value()))
-	if assert.Equal(t, 1, len(fnArgs)) {
-		assert.Equal(t, true, argValue.Equal(fnArgs[0]))
-	}
-}
-*/
-
 func TestValueIsNaN(t *testing.T) {
+	t.Parallel()
 	value, err := ValueOf("foo")
 	assert.NoError(t, err)
 	valueNaN := NaN(t)
@@ -224,6 +216,7 @@ func TestValueIsNaN(t *testing.T) {
 }
 
 func TestValueIsNull(t *testing.T) {
+	t.Parallel()
 	value, err := ValueOf("foo")
 	assert.NoError(t, err)
 
@@ -232,6 +225,7 @@ func TestValueIsNull(t *testing.T) {
 }
 
 func TestValueIsUndefined(t *testing.T) {
+	t.Parallel()
 	value, err := ValueOf("foo")
 	assert.NoError(t, err)
 
@@ -240,6 +234,7 @@ func TestValueIsUndefined(t *testing.T) {
 }
 
 func TestValueLength(t *testing.T) {
+	t.Parallel()
 	value, err := ValueOf([]any{1, 2, 3})
 	assert.NoError(t, err)
 
@@ -249,6 +244,7 @@ func TestValueLength(t *testing.T) {
 }
 
 func TestValueSetIndex(t *testing.T) {
+	t.Parallel()
 	value, err := ValueOf([]any{1, 2, 3})
 	assert.NoError(t, err)
 
@@ -264,6 +260,7 @@ func TestValueSetIndex(t *testing.T) {
 }
 
 func TestValueTruthy(t *testing.T) {
+	t.Parallel()
 	valueString, err := ValueOf("foo")
 	assert.NoError(t, err)
 	valueTrue, err := ValueOf(true)

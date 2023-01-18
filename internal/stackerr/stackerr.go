@@ -1,5 +1,6 @@
 //go:build js && wasm
 
+// Package stackerr adds stack traces to verbose error messages.
 package stackerr
 
 import (
@@ -13,6 +14,8 @@ type stackError struct {
 	stack *stacktrace
 }
 
+// WithStack returns 'err' with a stack trace in its verbose formatter output.
+// Returns nil if err is nil.
 func WithStack(err error) error {
 	if err == nil {
 		return nil

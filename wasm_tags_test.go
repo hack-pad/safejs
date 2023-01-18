@@ -5,6 +5,7 @@ package safejs
 import (
 	"bufio"
 	"go/build/constraint"
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -13,8 +14,9 @@ import (
 )
 
 func TestAllWasmTags(t *testing.T) {
+	t.Parallel()
 	const rootDir = "."
-	walkErr := filepath.Walk(rootDir, func(path string, info fs.FileInfo, err error) error {
+	walkErr := filepath.Walk(rootDir, func(path string, info fs.FileInfo, err error) (resultErr error) {
 		switch {
 		case err != nil:
 			return err
@@ -32,7 +34,7 @@ func TestAllWasmTags(t *testing.T) {
 		if err != nil {
 			return err
 		}
-		defer f.Close()
+		defer handleCloseErr(f, &resultErr)
 		scanner := bufio.NewScanner(f)
 		for scanner.Scan() {
 			line := strings.TrimSpace(scanner.Text())
@@ -68,5 +70,12 @@ func isJSWasm(expr constraint.Expr) bool {
 		return (x == "js" && y == "wasm") || (x == "wasm" && y == "js")
 	default:
 		return false
+	}
+}
+
+func handleCloseErr(closer io.Closer, resultErr *error) {
+	err := closer.Close()
+	if err != nil && *resultErr == nil {
+		*resultErr = err
 	}
 }

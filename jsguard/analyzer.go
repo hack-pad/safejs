@@ -1,5 +1,6 @@
 //go:build !js
 
+// Package jsguard analyzes unsafe calls to Go's syscall/js package
 package jsguard
 
 import (
@@ -15,6 +16,7 @@ import (
 	"golang.org/x/tools/go/analysis"
 )
 
+// Analyzer analyzes unsafe calls to Go's syscall/js package
 var Analyzer = &analysis.Analyzer{
 	Name: "jsguard",
 	Doc:  "protect against unsafe calls to syscall/js",

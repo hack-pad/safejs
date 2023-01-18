@@ -1,5 +1,6 @@
 //go:build !js
 
+// Command jsguard reports unsafe calls to Go's syscall/js package
 package main
 
 import (

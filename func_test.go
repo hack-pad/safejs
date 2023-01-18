@@ -9,6 +9,7 @@ import (
 )
 
 func TestFuncOf(t *testing.T) {
+	t.Parallel()
 	var fnThis Value
 	var fnArgs []Value
 	returnValue, err := ValueOf("foo")

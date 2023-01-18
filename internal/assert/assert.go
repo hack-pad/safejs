@@ -1,3 +1,4 @@
+// Package assert contains small assertion test functions to assist in writing clean tests.
 package assert
 
 import (
@@ -5,6 +6,7 @@ import (
 	"testing"
 )
 
+// NoError asserts err is nil
 func NoError(t *testing.T, err error) bool {
 	t.Helper()
 	if err != nil {
@@ -14,6 +16,7 @@ func NoError(t *testing.T, err error) bool {
 	return true
 }
 
+// Equal asserts actual is equal to expected
 func Equal(t *testing.T, expected, actual any) bool {
 	t.Helper()
 	if !reflect.DeepEqual(expected, actual) {
@@ -23,6 +26,7 @@ func Equal(t *testing.T, expected, actual any) bool {
 	return true
 }
 
+// EqualError asserts err.Error() is equal to expected
 func EqualError(t *testing.T, err error, expected string) bool {
 	t.Helper()
 	if err == nil {
@@ -40,6 +44,7 @@ func EqualError(t *testing.T, err error, expected string) bool {
 	return true
 }
 
+// NotPanics asserts fn() does not panic
 func NotPanics(t *testing.T, fn func()) {
 	t.Helper()
 	defer func() {

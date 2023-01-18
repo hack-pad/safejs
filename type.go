@@ -4,8 +4,10 @@ package safejs
 
 import "syscall/js"
 
+// Type represents the JavaScript type of a Value.
 type Type int
 
+// Available JavaScript types
 const (
 	TypeUndefined = Type(js.TypeUndefined)
 	TypeNull      = Type(js.TypeNull)

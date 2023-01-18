@@ -16,8 +16,12 @@ import (
 )
 
 func init() {
-	os.Setenv("GOOS", "js")
-	os.Setenv("GOARCH", "wasm")
+	if err := os.Setenv("GOOS", "js"); err != nil {
+		panic(err)
+	}
+	if err := os.Setenv("GOARCH", "wasm"); err != nil {
+		panic(err)
+	}
 }
 
 func makePackageDir(t *testing.T, files map[string]string) string {
@@ -56,6 +60,7 @@ type ignoreTestingErrorf struct{}
 func (i ignoreTestingErrorf) Errorf(string, ...interface{}) {}
 
 func TestPackageJSCall(t *testing.T) {
+	t.Parallel()
 	const (
 		fooName = "foo.go"
 		fooFile = `
@@ -117,6 +122,7 @@ func Foo() {
 }
 
 func TestAliasPackageCall(t *testing.T) {
+	t.Parallel()
 	const (
 		fooName = "foo.go"
 		fooFile = `
@@ -163,6 +169,7 @@ func Foo() {
 }
 
 func TestMethodCall(t *testing.T) {
+	t.Parallel()
 	const (
 		fooName = "foo.go"
 		fooFile = `

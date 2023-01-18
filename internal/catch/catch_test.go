@@ -11,7 +11,9 @@ import (
 )
 
 func TestTry(t *testing.T) {
+	t.Parallel()
 	t.Run("happy path", func(t *testing.T) {
+		t.Parallel()
 		result, err := Try(func() string {
 			return "foo"
 		})
@@ -20,6 +22,7 @@ func TestTry(t *testing.T) {
 	})
 
 	t.Run("panic string", func(t *testing.T) {
+		t.Parallel()
 		result, err := Try(func() string {
 			panic("some error")
 		})
@@ -28,6 +31,7 @@ func TestTry(t *testing.T) {
 	})
 
 	t.Run("panic error", func(t *testing.T) {
+		t.Parallel()
 		result, err := Try(func() string {
 			panic(errors.New("some error"))
 		})
@@ -36,6 +40,7 @@ func TestTry(t *testing.T) {
 	})
 
 	t.Run("panic value", func(t *testing.T) {
+		t.Parallel()
 		result, err := Try(func() string {
 			panic(js.ValueOf(map[string]any{
 				"foo": 1,
@@ -46,6 +51,7 @@ func TestTry(t *testing.T) {
 	})
 
 	t.Run("throws error", func(t *testing.T) {
+		t.Parallel()
 		result, err := Try(func() string {
 			js.Global().Call("Array", -1)
 			return "foo"
@@ -56,6 +62,7 @@ func TestTry(t *testing.T) {
 }
 
 func TestTrySideEffect(t *testing.T) {
+	t.Parallel()
 	err := TrySideEffect(func() {
 		t.Log("just a print")
 	})
