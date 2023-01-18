@@ -10,6 +10,8 @@ SafeJS provides a near-identical API to `syscall/js`, but returns errors instead
 
 Although returned errors aren't pretty, they make it much easier to integrate with existing Go tools and code patterns.
 
+**Please note:** This package uses the same backward compatibility guarantees as `syscall/js`. In an effort to align with the Go standard library's API, some breaking changes may become necessary and will receive their own minor version bumps.
+
 ## Quick start
 
 1. Import `safejs`:
