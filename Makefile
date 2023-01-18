@@ -30,3 +30,8 @@ test: test-deps
 	GOOS=js GOARCH=wasm go test -coverprofile=js-cover.out -covermode=atomic ./...             # Test js side
 	{ echo 'mode: atomic'; cat *-cover.out | grep -v '^mode'; } > cover.out && rm *-cover.out  # Combine JS and non-JS coverage.
 	go tool cover -func cover.out | grep total:
+
+.PHONY: test-publish-coverage
+test-publish-coverage:
+	go install github.com/mattn/goveralls@v0.0.11
+	COVERALLS_TOKEN=$$GITHUB_TOKEN goveralls -coverprofile="cover.out" -service=github
