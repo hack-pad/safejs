@@ -5,13 +5,17 @@ A safer, drop-in replacement for Go's `syscall/js` JavaScript package.
 ## What makes it safer?
 
 Today, `syscall/js` panics when the JavaScript runtime throws errors.
-While this is sensible behavior in a JavaScript runtime, it is in stark contrast with Go's pattern of returned errors.
+While sensible in a JavaScript runtime, [Go libraries should avoid using `panic`](https://go.dev/doc/effective_go#panic).
 
-SafeJS provides a near-identical API to `syscall/js`, but returns errors instead of panicking.
+SafeJS provides a nearly identical API to `syscall/js`, but returns errors instead of panicking.
 
 Although returned errors aren't pretty, they make it much easier to integrate with existing Go tools and code patterns.
 
-**Please note:** This package uses the same backward compatibility guarantees as `syscall/js`. In an effort to align with the Go standard library's API, some breaking changes may become necessary and will receive their own minor version bumps.
+#### Backward compatibility
+
+This package uses the same backward compatibility guarantee as `syscall/js`.
+
+In an effort to align with the Go standard library API, some breaking changes may become necessary and receive their own minor version bumps.
 
 ## Quick start
 
@@ -19,7 +23,7 @@ Although returned errors aren't pretty, they make it much easier to integrate wi
 ```go
 import "github.com/hack-pad/safejs"
 ```
-2. Replace typical uses of `syscall/js` with the `safejs` alternative. 
+2. Replace uses of `syscall/js` with the `safejs` alternative. 
 
 Before:
 ```go
@@ -32,19 +36,10 @@ import "syscall/js"
 // InsertButton creates a new button, adds it to 'container', and returns it. Usually.
 func InsertButton(container js.Value) js.Value {
     // *whisper:* There's a good chance it could panic! Eh, probably don't need to document it, right?
-    dom, err := js.Global().Get("document")
-    if err != nil {
-        return err
-    }
-    button, err := dom.Call("createElement", "button")
-    if err != nil {
-        return err
-    }
-    _, err = container.Call("appendChild", button)
-    if err != nil {
-        return err
-    }
-    return button, nil
+    dom := js.Global().Get("document") // BOOM!
+    button := dom.Call("createElement", "button") // BANG!
+    container.Call("appendChild", button) // BAM!
+    return button
 }
 ```
 
@@ -56,7 +51,7 @@ package buttons
 
 import "github.com/hack-pad/safejs"
 
-// InsertButton creates a new button, adds it to 'container', and returns it or an error.
+// InsertButton creates a new button, adds it to 'container', and returns the button or the first error.
 func InsertButton(container safejs.Value) (safejs.Value, error) {
     dom, err := safejs.Global().Get("document")
     if err != nil {
@@ -76,12 +71,16 @@ func InsertButton(container safejs.Value) (safejs.Value, error) {
 
 ## Even safer
 
-If you would like additional safety when working with JavaScript, then use the `jsguard` linter as well.
+For additional JavaScript safety, use the `jsguard` linter too.
 
-`jsguard` reports the locations of unsafe JavaScript calls, which should be replaced with SafeJS.
+`jsguard` reports the locations of unsafe JavaScript calls, which should be replaced with calls to SafeJS.
 
 ```bash
 go install github.com/hack-pad/safejs/jsguard/cmd/jsguard
 export GOOS=js GOARCH=wasm
 jsguard ./...
 ```
+
+It *does not* report use of types like `js.Value` -- only function calls on those types.
+
+This makes it easy to integrate SafeJS into existing libraries which expose only standard library types.
