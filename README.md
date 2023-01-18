@@ -1,4 +1,5 @@
-# SafeJS
+# SafeJS  [![Go Reference](https://pkg.go.dev/badge/github.com/hack-pad/safejs.svg)](https://pkg.go.dev/github.com/hack-pad/safejs) [![CI](https://github.com/hack-pad/safejs/actions/workflows/ci.yml/badge.svg)](https://github.com/hack-pad/safejs/actions/workflows/ci.yml) [![Coverage Status](https://coveralls.io/repos/github/hack-pad/safejs/badge.svg?branch=main)](https://coveralls.io/github/hack-pad/safejs?branch=main)
+
 A safer, drop-in replacement for Go's `syscall/js` JavaScript package.
 
 ## What makes it safer?
