@@ -25,6 +25,8 @@ test-deps:
 
 .PHONY: test
 test: test-deps
-	go test wasm_tags_test.go                                  # Verify build tags and whatnot first
-	go test -race ./...                                        # Test non-js side
-	GOOS=js GOARCH=wasm go test -coverprofile=cover.out ./...  # Test js side
+	go test wasm_tags_test.go                                                                  # Verify build tags and whatnot first
+	go test -race -coverprofile=native-cover.out ./...                                         # Test non-js side
+	GOOS=js GOARCH=wasm go test -coverprofile=js-cover.out -covermode=atomic ./...             # Test js side
+	{ echo 'mode: atomic'; cat *-cover.out | grep -v '^mode'; } > cover.out && rm *-cover.out  # Combine JS and non-JS coverage.
+	go tool cover -func cover.out | grep total:
