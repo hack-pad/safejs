@@ -80,6 +80,7 @@ For additional JavaScript safety, use the `jsguard` linter too.
 `jsguard` reports the locations of unsafe JavaScript calls, which should be replaced with calls to SafeJS.
 
 ```bash
+# When installed without specifying a version, uses the go.mod version.
 go install github.com/hack-pad/safejs/jsguard/cmd/jsguard
 export GOOS=js GOARCH=wasm
 jsguard ./...
